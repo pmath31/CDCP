@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CDCP Scrollytelling V2</title>
+  <meta name="description" content="Scroll-animated concept page for the Canadian Dental Care Plan." />
+  <style>
+    :root{
+      --bg:#f8fbff;
+      --surface:#ffffff;
+      --text:#0f172a;
+      --muted:#334155;
+      --line:#cbd5e1;
+      --blue:#0b3d91;
+      --blue2:#dbeafe;
+      --teal:#0f766e;
+      --amber:#b45309;
+      --purple:#6d28d9;
+      --green:#166534;
+      --focus:#ffbf47;
+      --shadow:0 18px 40px rgba(15,23,42,.12);
+      --radius:20px;
+      --maxw:1400px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(11,61,145,.06), transparent 25%),
+        radial-gradient(circle at 85% 20%, rgba(15,118,110,.05), transparent 22%),
+        linear-gradient(180deg,#ffffff,#f7fbff 35%,#ffffff);
+      line-height:1.55;
+    }
+    a{color:var(--blue)}
+    a:focus-visible, button:focus-visible, input:focus-visible{
+      outline:4px solid var(--focus);
+      outline-offset:3px;
+      border-radius:8px;
+    }
+    .skip{
+      position:absolute;left:1rem;top:-4rem;background:#111827;color:#fff;padding:.7rem 1rem;
+      border-radius:10px;z-index:9999;text-decoration:none
+    }
+    .skip:focus{top:1rem}
+    header{
+      max-width:var(--maxw);margin:0 auto;padding:2rem 1rem 1rem;
+    }
+    .eyebrow{font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:.6rem}
+    h1{font-size:clamp(2.2rem,4.5vw,4.6rem);line-height:1.05;margin:0 0 .8rem}
+    .lead{max-width:75ch;color:var(--muted);font-size:1.08rem;margin:0 0 1rem}
+    .controls{
+      display:flex;gap:1rem;flex-wrap:wrap;align-items:center;
+      background:rgba(255,255,255,.78);border:1px solid var(--line);border-radius:999px;padding:.5rem .9rem;width:max-content;
+      box-shadow:0 8px 24px rgba(15,23,42,.06);
+    }
+    .controls label{display:flex;align-items:center;gap:.5rem;font-size:.95rem}
+    nav{
+      position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+      border-top:1px solid #eef2f7;border-bottom:1px solid var(--line);
+    }
+    nav .inner{
+      max-width:var(--maxw);margin:0 auto;padding:.65rem 1rem;display:flex;gap:.6rem;overflow:auto;
+    }
+    nav a{
+      white-space:nowrap;text-decoration:none;color:var(--text);background:#fff;border:1px solid var(--line);
+      border-radius:999px;padding:.42rem .7rem;font-size:.92rem;
+    }
+    nav a.active, nav a:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+    .scrolly{
+      max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:minmax(320px, 0.8fr) minmax(420px, 1.2fr);
+      gap:1rem;padding:1rem;
+      align-items:start;
+    }
+    .steps{position:relative;z-index:2}
+    .step{
+      min-height:92vh;display:flex;align-items:center;justify-content:flex-start;padding:8vh 0;
+    }
+    .step-card{
+      width:min(100%, 520px);
+      background:rgba(255,255,255,.88);backdrop-filter:blur(10px);
+      border:1px solid rgba(203,213,225,.95);
+      border-radius:24px;padding:1.2rem 1.2rem 1.1rem;box-shadow:var(--shadow);
+    }
+    .step-card h2{font-size:clamp(1.35rem,2.1vw,2rem);margin:.2rem 0 .7rem;line-height:1.15}
+    .step-card p{margin:.7rem 0}
+    .kicker{font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue)}
+    .callout{
+      margin-top:.9rem;padding:.8rem .9rem;border-left:6px solid var(--blue);background:#f4f8fd;border-radius:12px;font-weight:700
+    }
+    .sticky-wrap{
+      position:sticky;top:1rem;min-height:calc(100vh - 2rem);display:flex;align-items:center;
+    }
+    .scene-frame{
+      width:100%;min-height:88vh;background:linear-gradient(180deg,#ffffff,#f7fbff);
+      border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:1rem;overflow:hidden;position:relative;
+    }
+    .scene-head{
+      display:flex;justify-content:space-between;gap:1rem;align-items:start;margin-bottom:.6rem;position:relative;z-index:4;
+    }
+    .scene-head h3{margin:0;font-size:1.05rem}
+    .scene-head p{margin:.2rem 0 0;font-size:.92rem;color:var(--muted);max-width:44ch}
+    .pill{display:inline-block;padding:.3rem .55rem;border-radius:999px;background:#e8f1fb;color:#083b75;font-size:.8rem;font-weight:800}
+    .scene{
+      position:relative;height:76vh;min-height:640px;border:1px dashed var(--line);border-radius:22px;overflow:hidden;
+      background:
+        radial-gradient(circle at 50% 8%, rgba(11,61,145,.06), transparent 18%),
+        radial-gradient(circle at 12% 72%, rgba(15,118,110,.05), transparent 20%),
+        radial-gradient(circle at 88% 22%, rgba(109,40,217,.05), transparent 18%),
+        linear-gradient(180deg,#ffffff,#fbfdff);
+    }
+    .layer{
+      position:absolute;inset:0;pointer-events:none;transition:opacity .55s ease, transform .75s ease, filter .55s ease;
+    }
+    .fade{opacity:0;transform:translateY(18px) scale(.985)}
+    .show{opacity:1;transform:translateY(0) scale(1)}
+    .soft-hide{opacity:.18}
+    /* shared architecture */
+    .hub,.node,.overlay-box,.metric-card,.outcome-card,.ai-chip,.sheet-card{
+      position:absolute;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 28px rgba(15,23,42,.10);
+      padding:.85rem .95rem;
+    }
+    .hub{
+      left:34%;top:31%;width:31%;min-height:152px;background:linear-gradient(180deg,#0b3d91,#124daa);border:none;color:#fff;
+      box-shadow:0 20px 48px rgba(11,61,145,.24);
+    }
+    .hub p{margin:.35rem 0 0;color:rgba(255,255,255,.9);font-size:.92rem}
+    .hub strong,.node strong,.overlay-box strong,.metric-card strong,.outcome-card strong,.ai-chip strong,.sheet-card strong{display:block}
+    .hub .sub{display:inline-block;margin-top:.55rem;padding:.22rem .48rem;border-radius:999px;background:rgba(255,255,255,.16);font-size:.78rem;font-weight:800}
+    .node{width:22%}
+    .esdc{left:3%;top:10%}
+    .pspc{left:3%;bottom:11%}
+    .cra{right:3%;top:31%}
+    .outcome-card{right:9%;bottom:9%;width:24%;background:#f0fdf4;border-color:#86efac}
+    .outcome-card strong{color:var(--green)}
+    .metric-card{width:165px}
+    .m1{left:2%;top:3%}.m2{left:21%;top:3%}.m3{left:40%;top:3%}.m4{right:3%;top:3%}
+    .metric-card .num{font-size:1.45rem;font-weight:800;color:var(--blue);line-height:1.1}
+    .metric-card .label{font-size:.83rem;color:var(--muted)}
+    .overlay-box{width:176px;z-index:3}
+    .ov-esdc{left:24%;top:11%}
+    .ov-pspc{left:23%;bottom:17%}
+    .ov-cra{right:21%;top:16%}
+    .overlay-box .meta{font-size:.82rem;color:var(--muted);line-height:1.28}
+    .overlay-box.teal{border-color:var(--teal)}
+    .overlay-box.amber{border-color:var(--amber)}
+    .overlay-box.purple{border-color:var(--purple)}
+    .timeline{
+      position:absolute;left:13%;right:13%;bottom:1%;display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;z-index:3;
+    }
+    .timebox{
+      background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 20px rgba(15,23,42,.08);
+      padding:.62rem .72rem;font-size:.84rem;
+    }
+    .scene-svg{position:absolute;inset:0;width:100%;height:100%}
+    .base-line{fill:none;stroke:#d9e3ef;stroke-width:6;stroke-linecap:round}
+    .flow{fill:none;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;opacity:.1;transition:opacity .45s ease, stroke-width .45s ease, filter .45s ease}
+    .flow.active{opacity:1;stroke-width:10;filter:drop-shadow(0 0 10px rgba(15,23,42,.16))}
+    .teal-stroke{stroke:var(--teal)}
+    .amber-stroke{stroke:var(--amber)}
+    .purple-stroke{stroke:var(--purple)}
+    .green-stroke{stroke:var(--green)}
+    .dash{stroke-dasharray:15 12;animation:dash 9s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-108}}
+    /* spreadsheet layer */
+    .sheet-grid{position:absolute;inset:5% 4% 10%;display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}
+    .sheet-card{
+      height:78px;padding:.7rem .75rem;background:#fffdf7;border-color:#fde68a;
+      transition:transform .55s ease, opacity .55s ease;
+    }
+    .sheet-card .rows{margin-top:.35rem}
+    .sheet-card .r{height:7px;background:#fcd34d;border-radius:99px;margin:.28rem 0;opacity:.55}
+    .sheet-card.small{height:64px}
+    .collapse-target{
+      position:absolute;left:37%;top:36%;width:26%;height:120px;border:2px dashed #93c5fd;border-radius:18px;
+      background:rgba(239,246,255,.7)
+    }
+    /* AI chips */
+    .ai-chip{width:170px;background:#faf5ff;border-color:#d8b4fe}
+    .ai1{left:21%;top:19%}.ai2{left:18%;bottom:21%}.ai3{right:18%;top:20%}.ai4{right:18%;bottom:24%}
+    .ai-chip strong{color:var(--purple)}
+    /* Scene state tweaks */
+    .scene[data-state="promise"] .architecture,
+    .scene[data-state="reality"] .architecture,
+    .scene[data-state="business"] .architecture,
+    .scene[data-state="beforeafter"] .architecture,
+    .scene[data-state="platform"] .architecture,
+    .scene[data-state="esdc"] .architecture,
+    .scene[data-state="pspc"] .architecture,
+    .scene[data-state="cra"] .architecture,
+    .scene[data-state="outcomes"] .architecture,
+    .scene[data-state="scale"] .architecture,
+    .scene[data-state="ai"] .architecture{opacity:1}
+    .scene[data-state="promise"] .people-layer,
+    .scene[data-state="reality"] .people-layer{opacity:1}
+    .scene[data-state="promise"] .people-layer{transform:translateY(0)}
+    .scene[data-state="platform"] .hub,
+    .scene[data-state="esdc"] .hub,
+    .scene[data-state="pspc"] .hub,
+    .scene[data-state="cra"] .hub,
+    .scene[data-state="outcomes"] .hub,
+    .scene[data-state="scale"] .hub,
+    .scene[data-state="ai"] .hub{
+      box-shadow:0 0 0 6px rgba(11,61,145,.08), 0 20px 48px rgba(11,61,145,.24)
+    }
+    .scene[data-state="beforeafter"] .spreadsheet-layer{opacity:1}
+    .scene[data-state="beforeafter"] .sheet-card:nth-child(1){transform:translate(120px,120px) scale(.72)}
+    .scene[data-state="beforeafter"] .sheet-card:nth-child(2){transform:translate(155px,110px) scale(.72)}
+    .scene[data-state="beforeafter"] .sheet-card:nth-child(3){transform:translate(180px,100px) scale(.72)}
+    .scene[data-state="beforeafter"] .sheet-card:nth-child(4){transform:translate(120px,130px) scale(.72)}
+    .scene[data-state="beforeafter"] .sheet-card:nth-child(5){transform:translate(155px,120px) scale(.72)}
+    .scene[data-state="beforeafter"] .sheet-card:nth-child(6){transform:translate(180px,110px) scale(.72)}
+    .scene[data-state="beforeafter"] .architecture{opacity:1}
+    .scene[data-state="esdc"] .f-esdc,
+    .scene[data-state="pspc"] .f-pspc,
+    .scene[data-state="cra"] .f-cra,
+    .scene[data-state="outcomes"] .f-out,
+    .scene[data-state="scale"] .f-out,
+    .scene[data-state="ai"] .f-out{opacity:1;stroke-width:10;filter:drop-shadow(0 0 10px rgba(15,23,42,.16))}
+    .scene[data-state="esdc"] .esdc,
+    .scene[data-state="pspc"] .pspc,
+    .scene[data-state="cra"] .cra,
+    .scene[data-state="outcomes"] .outcome-card,
+    .scene[data-state="scale"] .outcome-card{
+      transform:translateY(-3px); box-shadow:0 0 0 5px rgba(11,61,145,.08), 0 12px 28px rgba(15,23,42,.10)
+    }
+    .scene[data-state="outcomes"] .outcome-card,
+    .scene[data-state="scale"] .outcome-card{box-shadow:0 0 0 5px rgba(22,101,52,.10), 0 12px 28px rgba(15,23,42,.10)}
+    .scene[data-state="promise"] .metric-apps,
+    .scene[data-state="outcomes"] .metric-care,
+    .scene[data-state="beforeafter"] .metric-manual,
+    .scene[data-state="scale"] .metric-renewal{transform:scale(1.06);border-color:var(--blue)}
+    .scene[data-state="ai"] .ai-layer{opacity:1}
+    .scene[data-state="ai"] .ai-chip{transform:translateY(0);opacity:1}
+    .scene[data-state="ai"] .ai-chip:nth-child(1){transition-delay:.05s}
+    .scene[data-state="ai"] .ai-chip:nth-child(2){transition-delay:.12s}
+    .scene[data-state="ai"] .ai-chip:nth-child(3){transition-delay:.19s}
+    .scene[data-state="ai"] .ai-chip:nth-child(4){transition-delay:.26s}
+    .ai-chip{opacity:0;transform:translateY(16px);transition:opacity .5s ease, transform .5s ease}
+    .outcome-copy{
+      position:absolute;right:2%;bottom:43%;width:190px;background:#fff;border:1px solid var(--line);border-radius:16px;
+      padding:.7rem .8rem;box-shadow:0 10px 22px rgba(15,23,42,.08);opacity:0;transition:opacity .45s ease, transform .45s ease;transform:translateY(10px);
+      z-index:3;
+    }
+    .scene[data-state="outcomes"] .outcome-copy,
+    .scene[data-state="scale"] .outcome-copy{opacity:1;transform:translateY(0)}
+    .chapter-note{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
+      padding:1rem 1.1rem;max-width:320px;text-align:center;z-index:4;opacity:0;transition:opacity .45s ease, transform .45s ease;
+    }
+    .scene[data-state="promise"] .note-promise,
+    .scene[data-state="reality"] .note-reality,
+    .scene[data-state="business"] .note-business,
+    .scene[data-state="platform"] .note-platform,
+    .scene[data-state="scale"] .note-scale{
+      opacity:1;transform:translate(-50%,-50%) scale(1)
+    }
+    .chapter-note strong{display:block;margin-bottom:.25rem}
+    .scene[data-state="promise"] .architecture{opacity:.22;transform:scale(.99)}
+    .scene[data-state="reality"] .architecture{opacity:.42}
+    .scene[data-state="business"] .architecture{opacity:.58}
+    .scene[data-state="beforeafter"] .people-layer{opacity:0}
+    .scene[data-state="platform"] .people-layer{opacity:0}
+    .people-layer{
+      display:block;
+    }
+    .tooth-mini{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      width:230px;height:230px;z-index:2;transition:opacity .55s ease, transform .75s ease;
+      filter:drop-shadow(0 16px 36px rgba(11,61,145,.12));
+    }
+    .person{position:absolute;width:76px;height:110px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:24px;z-index:2}
+    .person:before{content:"";position:absolute;top:-38px;left:18px;width:38px;height:38px;border-radius:50%;background:#dbeafe;border:1px solid #bfdbfe}
+    .p1{left:24%;top:36%}.p2{left:46%;top:30%}.p3{left:68%;top:36%}
+    .people-caption{
+      position:absolute;left:50%;bottom:17%;transform:translateX(-50%);background:#fff;border:1px solid var(--line);border-radius:16px;padding:.75rem .85rem;box-shadow:0 10px 22px rgba(15,23,42,.08);z-index:3
+    }
+    .footnotes{
+      max-width:var(--maxw);margin:1rem auto 0;padding:1rem;border-top:1px solid var(--line)
+    }
+    .footnotes ol{padding-left:1.2rem}
+    .footnotes li{margin-bottom:.75rem}
+    .note{
+      background:#fff8e1;border:1px solid #e5c87b;border-radius:14px;padding:1rem
+    }
+    @media (max-width: 1080px){
+      .scrolly{grid-template-columns:1fr}
+      .sticky-wrap{position:relative;top:auto;min-height:auto}
+      .scene{height:760px}
+      .step{min-height:auto;padding:2rem 0}
+      nav{position:relative}
+    }
+    @media (max-width: 760px){
+      .hero-grid{grid-template-columns:1fr}
+      .scene-head{display:block}
+      .scene-copy{max-width:none}
+      .scene{height:auto;min-height:900px}
+      .metric-card{width:140px}
+      .node{width:42%}
+      .esdc,.pspc{left:3%}
+      .cra{right:3%;top:18%}
+      .hub{left:29%;top:36%;width:42%}
+      .outcome-card{right:3%;bottom:8%;width:38%}
+      .overlay-box{width:154px}
+      .timeline{left:3%;right:3%;grid-template-columns:1fr}
+    }
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      .layer,.node,.overlay-box,.metric-card,.outcome-card,.ai-chip,.sheet-card,.chapter-note,.outcome-copy{transition:none}
+      .dash{animation:none}
+      .step{min-height:auto}
+      .sticky-wrap{position:relative}
+    }
+    .manual-reduced-motion .dash{animation:none}
+    .manual-reduced-motion .layer,.manual-reduced-motion .node,.manual-reduced-motion .overlay-box,.manual-reduced-motion .metric-card,.manual-reduced-motion .outcome-card,.manual-reduced-motion .ai-chip,.manual-reduced-motion .sheet-card,.manual-reduced-motion .chapter-note,.manual-reduced-motion .outcome-copy{transition:none}
+  </style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+
+<header>
+  <div class="eyebrow">Canadian Dental Care Plan</div>
+  <h1>Delivering Dental Care at Scale</h1>
+  <p class="lead">Version 2 rebuild: one pinned visual scene that evolves as you scroll. The architecture stays on screen, while overlays, flows, metrics, and emphasis change chapter by chapter.</p>
+  <div class="controls">
+    <label><input id="motionToggle" type="checkbox"> Reduce motion</label>
+    <span>Best viewed in a real browser, not file preview.</span>
+  </div>
+</header>
+
+<nav aria-label="Sections">
+  <div class="inner">
+    <a href="#promise" class="active">Promise</a>
+    <a href="#reality">Reality</a>
+    <a href="#business">Business case</a>
+    <a href="#beforeafter">Before/After</a>
+    <a href="#platform">Platform</a>
+    <a href="#esdc">ESDC</a>
+    <a href="#pspc">PSPC</a>
+    <a href="#cra">CRA</a>
+    <a href="#outcomes">Outcomes</a>
+    <a href="#scale">Scale</a>
+    <a href="#ai">AI</a>
+    <a href="#sources">Sources</a>
+  </div>
+</nav>
+
+<main id="main" class="scrolly">
+  <section class="steps">
+    <article class="step" id="promise" data-state="promise">
+      <div class="step-card">
+        <div class="kicker">1. The promise</div>
+        <h2>Start with Canadians, not systems</h2>
+        <p>The Canadian Dental Care Plan exists to help eligible Canadians access dental care they may otherwise struggle to afford.</p>
+        <p>Official statistics reported <strong>6,395,559 approved applicants</strong> for the 2025 to 2026 benefit year as of February 28, 2026. That is the visible public promise.</p>
+        <div class="callout">The story should open with human value, then peel back to reveal the machinery underneath.</div>
+      </div>
+    </article>
+
+    <article class="step" id="reality" data-state="reality">
+      <div class="step-card">
+        <div class="kicker">2. The delivery reality</div>
+        <h2>The hidden machinery begins to emerge</h2>
+        <p>A national benefit program needs more than intake. It needs validation, evidence handling, case routing, exception management, and renewals at scale.</p>
+        <p>This is the pivot point where the visual starts to reveal the operating model instead of replacing it with a new graphic.</p>
+        <div class="callout">National benefits are easy to announce. Administering them well is much harder.</div>
+      </div>
+    </article>
+
+    <article class="step" id="business" data-state="business">
+      <div class="step-card">
+        <div class="kicker">3. Why the capability was needed</div>
+        <h2>Scale turns process gaps into operational risk</h2>
+        <p>Without the right digital and operational capabilities, the program faces growing strain from manual case handling, fragmented evidence review, disconnected data, and rising renewal pressure.</p>
+        <p>The business case is not modernization for its own sake. It is a more durable operating model.</p>
+        <div class="callout">At small scale these are frictions. At national scale they become risks.</div>
+      </div>
+    </article>
+
+    <article class="step" id="beforeafter" data-state="beforeafter">
+      <div class="step-card">
+        <div class="kicker">4. Concrete before and after</div>
+        <h2>Show the spreadsheet burden collapse into structure</h2>
+        <p>At one stage, the team had to manage approximately <strong>100,000 cases manually</strong> using Excel-based processes.</p>
+        <p>In this scene, spreadsheet fragments flood the canvas, then collapse toward a structured operating backbone instead of forcing the audience to jump to a new page concept.</p>
+        <div class="callout">Manual coordination is not a scale strategy.</div>
+      </div>
+    </article>
+
+    <article class="step" id="platform" data-state="platform">
+      <div class="step-card">
+        <div class="kicker">5. The platform</div>
+        <h2>The hub becomes the focal point</h2>
+        <p>Now the audience has context. This is where Health Canada’s case-management and control platform becomes the core visual object.</p>
+        <p>It is not “just a CRM.” It is the operating backbone for review, orchestration, traceability, and integrity support.</p>
+        <div class="callout">This is not a front-end project. It is a control and operations platform.</div>
+      </div>
+    </article>
+
+    <article class="step" id="esdc" data-state="esdc">
+      <div class="step-card">
+        <div class="kicker">6. Pipeline overlay: ESDC</div>
+        <h2>Keep the scene fixed. Turn on only the ESDC story.</h2>
+        <p>The same architecture stays pinned. Only the ESDC path lights up, along with overlay boxes and timing cards.</p>
+        <p>Replace the placeholders with real cadence and record volumes when you are ready.</p>
+        <div class="callout">This is where to show timing, records per cycle, and the business event each feed supports.</div>
+      </div>
+    </article>
+
+    <article class="step" id="pspc" data-state="pspc">
+      <div class="step-card">
+        <div class="kicker">7. Pipeline overlay: PSPC</div>
+        <h2>Same canvas. New emphasis.</h2>
+        <p>Now the overlay switches to PSPC. The scene does not reset, which makes the mail and document flow easier to absorb.</p>
+        <p>This is the moment to show inbound and outbound mail, document packages, turnaround windows, and operational role.</p>
+        <div class="callout">The audience should not have to relearn the diagram every time the story moves.</div>
+      </div>
+    </article>
+
+    <article class="step" id="cra" data-state="cra">
+      <div class="step-card">
+        <div class="kicker">8. Pipeline overlay: CRA</div>
+        <h2>Then isolate validation and mismatch handling</h2>
+        <p>The visual now highlights CRA while keeping the rest of the architecture stable in the background.</p>
+        <p>Official statistics also reported <strong>27,968 participating oral health providers</strong> as of February 28, 2026. That is one reason validation and exception handling matter at scale.</p>
+        <div class="callout">Show validation timing, reviewed records, and how mismatches become operational follow-up.</div>
+      </div>
+    </article>
+
+    <article class="step" id="outcomes" data-state="outcomes">
+      <div class="step-card">
+        <div class="kicker">9. Outcomes</div>
+        <h2>Shift the emphasis from pipes to results</h2>
+        <p>Official statistics reported <strong>4,043,306 unique approved applicants had received care since launch</strong> as of February 28, 2026.</p>
+        <p>The same architecture now pushes attention toward consistency, responsiveness, traceability, and program integrity.</p>
+        <div class="callout">Better systems are not the outcome. Better delivery is.</div>
+      </div>
+    </article>
+
+    <article class="step" id="scale" data-state="scale">
+      <div class="step-card">
+        <div class="kicker">10. The hard truth</div>
+        <h2>Use the same scene to show future strain</h2>
+        <p>The next challenge is scale: higher case volumes, renewals, operational onboarding, partner coordination, and the remaining automation needed to reduce manual burden.</p>
+        <p>The overlay changes again, but the operating model stays visible so the audience sees exactly where pressure lands.</p>
+        <div class="callout">Launch is not the finish line. Sustainable administration is.</div>
+      </div>
+    </article>
+
+    <article class="step" id="ai" data-state="ai">
+      <div class="step-card">
+        <div class="kicker">11. The next frontier</div>
+        <h2>Add the intelligence layer only after the foundation is clear</h2>
+        <p>A discovery session is planned to explore AI opportunities tied to business outcomes: OCR for member-submitted documents, anomaly and fraud detection, seasonality analysis, and predictive analytics.</p>
+        <p>The current public page notes renewals for the 2026 to 2027 benefit year run from <strong>April 15 to June 1, 2026</strong>.</p>
+        <div class="callout">The goal is not AI theatre. It is more intelligent operational support over time.</div>
+      </div>
+    </article>
+  </section>
+
+  <aside class="sticky-wrap" aria-label="Pinned visual scene">
+    <div class="scene-frame">
+      <div class="scene-head">
+        <div>
+          <div class="pill" id="sceneStep">Section 1</div>
+          <h3 id="sceneTitle">Pinned scene</h3>
+          <p id="sceneDesc">One visual scene evolves as you scroll.</p>
+        </div>
+      </div>
+
+      <div class="scene" id="scene" data-state="promise">
+        <!-- people/promise layer -->
+        <div class="layer people-layer show" aria-hidden="true">
+          <svg class="tooth-mini" viewBox="0 0 240 240">
+            <defs>
+              <linearGradient id="toothGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="100%" stop-color="#eef6ff"/>
+              </linearGradient>
+            </defs>
+            <path d="M121 27c-28 0-53 17-63 41-7 16-7 34-1 50 6 16 16 29 19 46 2 11 4 48 21 48 12 0 14-23 20-42 4-12 9-19 18-19s14 7 18 19c6 19 8 42 20 42 17 0 19-37 21-48 3-17 13-30 19-46 6-16 6-34-1-50-10-24-35-41-63-41-11 0-21 5-28 10-8-5-17-10-29-10z" fill="url(#toothGrad)" stroke="#bfd3ea" stroke-width="3"/>
+          </svg>
+          <div class="person p1"></div>
+          <div class="person p2"></div>
+          <div class="person p3"></div>
+          <div class="people-caption"><strong>Access to care</strong><br><span class="small">Start with citizens. Reveal the machinery later.</span></div>
+        </div>
+
+        <!-- persistent architecture -->
+        <div class="layer architecture show">
+          <div class="metric-card m1 metric-apps"><span class="num">6.4M</span><span class="label">Approved applicants</span></div>
+          <div class="metric-card m2 metric-care"><span class="num">4.0M</span><span class="label">People who had received care</span></div>
+          <div class="metric-card m3 metric-manual"><span class="num">100,000</span><span class="label">Manual Excel-based cases</span></div>
+          <div class="metric-card m4 metric-renewal"><span class="num">Apr 15–Jun 1</span><span class="label">Renewal window</span></div>
+
+          <div class="node esdc"><strong>ESDC</strong><div class="small">Member and program-related data inputs</div></div>
+          <div class="node pspc"><strong>PSPC</strong><div class="small">Inbound and outbound mail and documents</div></div>
+          <div class="node cra"><strong>CRA</strong><div class="small">Validation and mismatch-related data</div></div>
+          <div class="hub"><strong>Health Canada</strong><p>Case management, orchestration, review, and integrity controls</p><span class="sub">Operational backbone</span></div>
+          <div class="outcome-card"><strong>Business outcomes</strong><div class="small">Consistency, responsiveness, traceability, renewals readiness</div></div>
+
+          <svg class="scene-svg" viewBox="0 0 1000 700" aria-hidden="true">
+            <path class="base-line" d="M180 140 C310 140, 360 220, 430 300"/>
+            <path class="base-line" d="M180 550 C310 550, 355 455, 430 370"/>
+            <path class="base-line" d="M795 300 C720 300, 685 300, 610 300"/>
+            <path class="base-line" d="M610 405 C710 468, 790 508, 880 525"/>
+            <path class="flow teal-stroke dash f-esdc" d="M180 140 C310 140, 360 220, 430 300"/>
+            <path class="flow amber-stroke dash f-pspc" d="M180 550 C310 550, 355 455, 430 370"/>
+            <path class="flow purple-stroke dash f-cra" d="M795 300 C720 300, 685 300, 610 300"/>
+            <path class="flow green-stroke dash f-out" d="M610 405 C710 468, 790 508, 880 525"/>
+          </svg>
+
+          <div class="overlay-box ov-esdc teal"><strong>ESDC feed</strong><div class="meta">Cadence: placeholder<br>Records: placeholder<br>Purpose: member data and status</div></div>
+          <div class="overlay-box ov-pspc amber"><strong>PSPC exchange</strong><div class="meta">Cadence: placeholder<br>Volume: placeholder<br>Purpose: correspondence and document movement</div></div>
+          <div class="overlay-box ov-cra purple"><strong>CRA validation</strong><div class="meta">Cadence: placeholder<br>Records: placeholder<br>Purpose: validation and mismatch review</div></div>
+
+          <div class="timeline">
+            <div class="timebox t-esdc"><strong>Feed timing</strong>Replace with actual ESDC cadence</div>
+            <div class="timebox t-esdc"><strong>Record count</strong>Replace with records per cycle</div>
+            <div class="timebox t-esdc"><strong>Business event</strong>Eligibility and member support</div>
+
+            <div class="timebox t-pspc"><strong>Mail timing</strong>Replace with inbound / outbound schedule</div>
+            <div class="timebox t-pspc"><strong>Item volume</strong>Replace with package or document counts</div>
+            <div class="timebox t-pspc"><strong>Operational role</strong>Evidence and correspondence</div>
+
+            <div class="timebox t-cra"><strong>Validation cycle</strong>Replace with actual timing</div>
+            <div class="timebox t-cra"><strong>Records reviewed</strong>Replace with actual count or range</div>
+            <div class="timebox t-cra"><strong>Operational impact</strong>Mismatch handling and follow-up</div>
+
+            <div class="timebox t-scale"><strong>Renewals</strong>Higher recurring volume</div>
+            <div class="timebox t-scale"><strong>Operations</strong>Onboarding and coordination pressure</div>
+            <div class="timebox t-scale"><strong>Automation</strong>Remaining manual burden to reduce</div>
+          </div>
+
+          <div class="outcome-copy"><strong>Outcomes view</strong><div class="small">The narrative emphasis now moves from inbound flows to service delivery effects.</div></div>
+        </div>
+
+        <!-- spreadsheet layer -->
+        <div class="layer spreadsheet-layer fade" aria-hidden="true">
+          <div class="sheet-grid">
+            <div class="sheet-card"><strong>Case batch A</strong><div class="rows"><div class="r"></div><div class="r"></div><div class="r"></div></div></div>
+            <div class="sheet-card small"><strong>Member list</strong><div class="rows"><div class="r"></div><div class="r"></div></div></div>
+            <div class="sheet-card"><strong>Exception queue</strong><div class="rows"><div class="r"></div><div class="r"></div><div class="r"></div></div></div>
+            <div class="sheet-card small"><strong>Validation flags</strong><div class="rows"><div class="r"></div><div class="r"></div></div></div>
+            <div class="sheet-card small"><strong>Reassessment</strong><div class="rows"><div class="r"></div><div class="r"></div></div></div>
+            <div class="sheet-card"><strong>Mail tracking</strong><div class="rows"><div class="r"></div><div class="r"></div><div class="r"></div></div></div>
+          </div>
+          <div class="collapse-target"></div>
+        </div>
+
+        <!-- AI layer -->
+        <div class="layer ai-layer fade">
+          <div class="ai-chip ai1"><strong>OCR</strong><div class="small">Interpret member documents faster</div></div>
+          <div class="ai-chip ai2"><strong>Seasonality</strong><div class="small">Forecast workload and staffing pressure</div></div>
+          <div class="ai-chip ai3"><strong>Anomaly detection</strong><div class="small">Surface suspicious or inconsistent cases</div></div>
+          <div class="ai-chip ai4"><strong>Predictive analytics</strong><div class="small">Anticipate surges and bottlenecks</div></div>
+        </div>
+
+        <!-- centered chapter notes -->
+        <div class="chapter-note note-promise"><strong>Promise first</strong>Start with people, care, and scale before revealing operating complexity.</div>
+        <div class="chapter-note note-reality"><strong>Reveal the machinery</strong>The same scene starts to expose the hidden administration problem.</div>
+        <div class="chapter-note note-business"><strong>Business case</strong>Scale turns manual work, fragmented evidence, and disconnected data into real risk.</div>
+        <div class="chapter-note note-platform"><strong>Platform focus</strong>The hub is now the center of the story: control, orchestration, and traceability.</div>
+        <div class="chapter-note note-scale"><strong>Future pressure</strong>Use the same architecture to show where renewals and volume strain will land next.</div>
+
+        <div class="sr-only" id="sceneLive" aria-live="polite">Scene state: promise</div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<section class="footnotes" id="sources">
+  <h2>References and notes</h2>
+  <ol>
+    <li><strong>Internal proof point:</strong> approximately 100,000 cases required manual management using Excel-based processes.</li>
+    <li><strong>Official CDCP statistics page:</strong> placeholder public metrics in this draft use Government of Canada statistics valid as of February 28, 2026, including 6,395,559 approved applicants, 4,043,306 unique approved applicants who had received care since launch, and 27,968 participating oral health providers.</li>
+    <li><strong>2024 Fall Economic Statement:</strong> the Government of Canada reported that eligible Canadians were saving on average $730 in services covered under the plan.</li>
+    <li><strong>CDCP program page:</strong> the public program page states that renewals for the 2026 to 2027 benefit year run from April 15 to June 1, 2026.</li>
+  </ol>
+  <div class="note">
+    <strong>Accessibility note:</strong> This version still prioritizes semantic structure, keyboard access, visible focus, and reduced-motion support. It is more animation-forward than prior drafts, so it should be tested carefully before real use.
+  </div>
+</section>
+
+<script>
+(function(){
+  const scene = document.getElementById("scene");
+  const stepLabel = document.getElementById("sceneStep");
+  const sceneTitle = document.getElementById("sceneTitle");
+  const sceneDesc = document.getElementById("sceneDesc");
+  const sceneLive = document.getElementById("sceneLive");
+  const steps = document.querySelectorAll(".step");
+  const navLinks = document.querySelectorAll("nav a");
+  const motionToggle = document.getElementById("motionToggle");
+  const aiLayer = document.querySelector(".ai-layer");
+  const spreadsheetLayer = document.querySelector(".spreadsheet-layer");
+  const peopleLayer = document.querySelector(".people-layer");
+  const timeline = document.querySelector(".timeline");
+  const allTimeboxes = document.querySelectorAll(".timebox");
+
+  const sceneMeta = {
+    promise: ["Section 1", "Promise layer", "The story begins with people and public value."],
+    reality: ["Section 2", "Reveal layer", "The machinery underneath begins to appear without resetting the scene."],
+    business: ["Section 3", "Business case layer", "The same scene now carries the risk and sustainability argument."],
+    beforeafter: ["Section 4", "Before/after layer", "Spreadsheet fragments collapse toward a structured operating model."],
+    platform: ["Section 5", "Platform layer", "The Health Canada hub becomes the focal point."],
+    esdc: ["Section 6", "ESDC overlay", "Only the ESDC path and its data cards are emphasized."],
+    pspc: ["Section 7", "PSPC overlay", "The same scene now emphasizes mail and document exchange."],
+    cra: ["Section 8", "CRA overlay", "The same scene now emphasizes validation and mismatch handling."],
+    outcomes: ["Section 9", "Outcomes overlay", "Attention shifts away from inputs and toward operational results."],
+    scale: ["Section 10", "Scale overlay", "Future pressure lands on the same operating model."],
+    ai: ["Section 11", "AI layer", "The intelligence layer appears only after the operating foundation is clear."]
+  };
+
+  function showTimeline(group){
+    allTimeboxes.forEach(el => {
+      el.style.display = "none";
+    });
+    if(group){
+      document.querySelectorAll(".t-" + group).forEach(el => el.style.display = "block");
+    }
+  }
+
+  function setScene(state){
+    scene.dataset.state = state;
+    const meta = sceneMeta[state] || sceneMeta.promise;
+    stepLabel.textContent = meta[0];
+    sceneTitle.textContent = meta[1];
+    sceneDesc.textContent = meta[2];
+    sceneLive.textContent = "Scene state: " + state;
+
+    peopleLayer.classList.toggle("show", state === "promise" || state === "reality");
+    peopleLayer.classList.toggle("fade", !(state === "promise" || state === "reality"));
+
+    spreadsheetLayer.classList.toggle("show", state === "beforeafter");
+    spreadsheetLayer.classList.toggle("fade", state !== "beforeafter");
+
+    aiLayer.classList.toggle("show", state === "ai");
+    aiLayer.classList.toggle("fade", state !== "ai");
+
+    if (state === "esdc") showTimeline("esdc");
+    else if (state === "pspc") showTimeline("pspc");
+    else if (state === "cra") showTimeline("cra");
+    else if (state === "scale") showTimeline("scale");
+    else timeline.style.display = "none";
+
+    if (["esdc","pspc","cra","scale"].includes(state)) timeline.style.display = "grid";
+  }
+
+  function activateNav(id){
+    navLinks.forEach(a => {
+      const href = a.getAttribute("href").replace("#","");
+      const active = href === id;
+      a.classList.toggle("active", active);
+      if(active) a.setAttribute("aria-current","true"); else a.removeAttribute("aria-current");
+    });
+  }
+
+  let reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  motionToggle.checked = reduced;
+  document.documentElement.classList.toggle("manual-reduced-motion", reduced);
+  motionToggle.addEventListener("change", () => {
+    reduced = motionToggle.checked;
+    document.documentElement.classList.toggle("manual-reduced-motion", reduced);
+  });
+
+  setScene("promise");
+  activateNav("promise");
+
+  if ("IntersectionObserver" in window){
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          const state = entry.target.dataset.state;
+          setScene(state);
+          activateNav(entry.target.id);
+        }
+      });
+    }, {threshold: reduced ? 0.62 : 0.45});
+    steps.forEach(step => observer.observe(step));
+  }
+})();
+</script>
+</body>
+</html>
